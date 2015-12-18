@@ -72,7 +72,7 @@ val reset_tips_service :
    [< Eliom_service.service_kind > `NonattachedCoservice ],
    [ `WithoutSuffix ], unit, unit,
    [< Eliom_service.registrable > `Registrable ],
-   [> Eliom_service.http_service ])
+   Eliom_service.http_service)
          Eliom_service.service
 
 
