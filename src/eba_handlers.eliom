@@ -176,7 +176,8 @@ let activation_handler akey () =
   try%lwt
     let%lwt userid = Eba_user.userid_of_activationkey akey in
     let%lwt () = Eba_session.connect userid in
-    Eliom_registration.Redirection.send Eliom_service.void_coservice'
+    Eliom_registration.Redirection.send
+      (Eliom_registration.Service Eliom_service.void_coservice')
   with Eba_db.No_such_resource ->
     Eliom_reference.Volatile.set
       Eba_userbox.activation_key_outdated true;
