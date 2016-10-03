@@ -41,8 +41,12 @@
     be updated every time the client is notified.
 *)
 
-module Make(A : sig type key type notification end) :
-sig
+module Make(A : sig
+      type key
+      type server_notif
+      type client_notif
+      val prepare : int64 option -> server_notif -> client_notif option Lwt.t
+    end) : sig
 
   (** Make client process listen on data whose index is [key] *)
   val listen : A.key -> unit
@@ -67,8 +71,7 @@ sig
       currently doing the request (the one which caused the notification to
       happen). Default is [false].
   *)
-  val notify : ?notforme:bool -> A.key ->
-    (int64 option -> A.notification option Lwt.t) -> unit
+  val notify : ?notforme:bool -> A.key -> A.server_notif -> unit
 
   (** Returns the client react event. Map a function on this event to react
       to notifications from the server.
@@ -83,6 +86,18 @@ sig
 ]
 
   *)
-  val client_ev : unit -> (A.key * A.notification) Eliom_react.Down.t
+  val client_ev : unit -> (A.key * A.client_notif) Eliom_react.Down.t
 
+end
+
+module Simple(A : sig
+      type key
+      type notification
+    end) : sig
+  val listen : A.key -> unit
+  val unlisten : A.key -> unit
+  val unlisten_user :
+    ?sitedata:Eliom_common.sitedata -> userid:int64 -> A.key -> unit
+  val notify : ?notforme:bool -> A.key -> A.notification -> unit
+  val client_ev : unit -> (A.key * A.notification) Eliom_react.Down.t
 end
