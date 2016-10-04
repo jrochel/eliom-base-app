@@ -29,7 +29,7 @@
    We also record all opened mainboxes.
 *)
 
-module type T = sig
+module type S = sig
   type key
   type server_notif
   type client_notif
